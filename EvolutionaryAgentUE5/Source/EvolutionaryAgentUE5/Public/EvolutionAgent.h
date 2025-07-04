@@ -16,6 +16,10 @@ public:
 	AEvolutionAgent();
 
 private:
+	// Collision component (MUST be root)
+	UPROPERTY(VisibleAnywhere)
+	class UCapsuleComponent* CollisionComponent;
+
 	// Visible box component
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* Mesh;

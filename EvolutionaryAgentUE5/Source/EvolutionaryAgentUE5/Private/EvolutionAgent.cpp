@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EvolutionAgent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
@@ -11,8 +12,16 @@ AEvolutionAgent::AEvolutionAgent()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
+	RootComponent = CollisionComponent;
+	CollisionComponent->InitCapsuleSize(35.f, 35.f); // Radius, HalfHeight
+	CollisionComponent->SetCollisionProfileName(TEXT("Pawn")); // Or "Custom" profile
+
+
+	// 2. Configure mesh (now attached to collision root)
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = Mesh;
+	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Let root handle collisions
 
 	// Add basic cube mesh
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube"));
