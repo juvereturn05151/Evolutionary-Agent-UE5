@@ -4,6 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EvolutionAgent.h"
+#include "PopulationManager.h"
 #include "Engine/World.h"
 
 void AEvolutionPlayerController::BeginPlay()
@@ -57,13 +58,15 @@ void AEvolutionPlayerController::HandleClick(const FInputActionValue& Value)
     // 3. Debug output
     if (Hit.bBlockingHit)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
         DrawDebugSphere(GetWorld(), Hit.Location, 20.f, 12, FColor::Red, false, 2.f);
 
         if (Hit.GetActor()->IsA<AEvolutionAgent>())
         {
-            Hit.GetActor()->Destroy();
-            UE_LOG(LogTemp, Warning, TEXT("Agent destroyed!"));
+            if (AEvolutionAgent* Agent = static_cast<AEvolutionAgent*>(Hit.GetActor()))
+            {
+                Agent->SetTimeToDie(APopulationManager::GetInstance(GetWorld())->GetElapsedTime());
+                Agent->Destroy();
+            }
         }
     }
 }

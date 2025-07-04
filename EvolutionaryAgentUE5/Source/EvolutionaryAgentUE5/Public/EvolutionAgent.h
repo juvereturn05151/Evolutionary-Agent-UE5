@@ -24,6 +24,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* Mesh;
 
+	UPROPERTY(VisibleAnywhere)
+	float TimeToDie;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,6 +43,7 @@ public:
 
 	void SetEvolvedColor(const FColor& NewColor);
 	void SetEvolvedSize(const FVector& NewSize);
+	void SetTimeToDie(float NewTime);
 
 	FColor& GetEvolvedColor();
 	FVector& GetEvolvedSize();

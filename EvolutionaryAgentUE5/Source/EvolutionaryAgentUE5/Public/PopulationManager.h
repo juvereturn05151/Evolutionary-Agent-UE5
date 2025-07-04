@@ -12,8 +12,17 @@ class EVOLUTIONARYAGENTUE5_API APopulationManager : public AActor
 	GENERATED_BODY()
 	
 public:	
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Population", meta = (WorldContext = "WorldContextObject"))
+	static APopulationManager* GetInstance(const UObject* WorldContextObject);
+
+
+private:
 	// Sets default values for this actor's properties
 	APopulationManager();
+
+	// Static instance pointer
+	static APopulationManager* Instance;
 
 protected:
 	// Called when the game starts or when spawned

@@ -65,6 +65,11 @@ void AEvolutionAgent::SetEvolvedSize(const FVector& NewSize)
 	EvolvedSize = NewSize;
 }
 
+void AEvolutionAgent::SetTimeToDie(float NewTime)
+{
+	TimeToDie = NewTime;
+}
+
 FColor& AEvolutionAgent::GetEvolvedColor()
 {
 	return EvolvedColor;
