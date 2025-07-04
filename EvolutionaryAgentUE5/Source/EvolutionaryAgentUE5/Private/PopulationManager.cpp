@@ -24,7 +24,12 @@ void APopulationManager::BeginPlay()
 void APopulationManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	ElapsedTime += DeltaTime;
+    if (ElapsedTime >= TrialTime) 
+    {
+		//Breed New Population
+		ElapsedTime = 0.0f; // Reset elapsed time
+    }
 }
 
 void APopulationManager::SpawnInitialPopulation()
