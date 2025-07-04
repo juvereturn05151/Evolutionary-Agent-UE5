@@ -59,12 +59,28 @@ void APopulationManager::SpawnInitialPopulation()
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
         // Spawn the agent
-        GetWorld()->SpawnActor<AEvolutionAgent>(
+        AEvolutionAgent* NewAgent = GetWorld()->SpawnActor<AEvolutionAgent>(
             AgentClass,
             Location,
             Rotation,
             SpawnParams
         );
+
+        if (NewAgent)
+        {
+            // Generate random color (RGB 0-255)
+            FColor RandomColor(
+                FMath::RandRange(0, 255),   // Red
+                FMath::RandRange(0, 255),   // Green
+                FMath::RandRange(0, 255)     // Blue
+            );
+
+            // Set the random color
+            NewAgent->SetEvolvedColor(RandomColor);
+
+            // Optional: Apply traits immediately
+            NewAgent->ApplyTraits();
+        }
     }
 }
 

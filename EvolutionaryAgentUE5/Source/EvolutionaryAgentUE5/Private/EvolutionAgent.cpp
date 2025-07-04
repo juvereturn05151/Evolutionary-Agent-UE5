@@ -30,8 +30,14 @@ AEvolutionAgent::AEvolutionAgent()
 		Mesh->SetStaticMesh(CubeMesh.Object);
 	}
 
+	static ConstructorHelpers::FObjectFinder<UMaterial> BaseMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
+	if (BaseMaterial.Succeeded())
+	{
+		Mesh->SetMaterial(0, BaseMaterial.Object);
+	}
+
 	// Default traits
-	EvolvedColor = FLinearColor::Green;
+	//SetEvolvedColor(FColor(255, 100, 50));
 	EvolvedSize = FVector(1.0f);
 }
 
@@ -39,7 +45,7 @@ AEvolutionAgent::AEvolutionAgent()
 void AEvolutionAgent::BeginPlay()
 {
 	Super::BeginPlay();
-	ApplyTraits();
+	//ApplyTraits();
 }
 
 // Called every frame
@@ -49,7 +55,7 @@ void AEvolutionAgent::Tick(float DeltaTime)
 
 }
 
-void AEvolutionAgent::SetEvolvedColor(const FLinearColor& NewColor)
+void AEvolutionAgent::SetEvolvedColor(const FColor& NewColor)
 {
 	EvolvedColor = NewColor;
 }
@@ -59,7 +65,7 @@ void AEvolutionAgent::SetEvolvedSize(const FVector& NewSize)
 	EvolvedSize = NewSize;
 }
 
-FLinearColor& AEvolutionAgent::GetEvolvedColor()
+FColor& AEvolutionAgent::GetEvolvedColor()
 {
 	return EvolvedColor;
 }
@@ -79,7 +85,7 @@ void AEvolutionAgent::ApplyTraits()
 	if (BaseMaterial)
 	{
 		UMaterialInstanceDynamic* DynMat = UMaterialInstanceDynamic::Create(BaseMaterial, this);
-		DynMat->SetVectorParameterValue("Color", EvolvedColor);
+		DynMat->SetVectorParameterValue("Color", FLinearColor(EvolvedColor));
 		Mesh->SetMaterial(0, DynMat);
 	}
 }

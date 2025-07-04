@@ -29,7 +29,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Agent Trait")
-	FLinearColor EvolvedColor;
+	FColor EvolvedColor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Agent Trait")
 	FVector EvolvedSize;
@@ -38,10 +38,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetEvolvedColor(const FLinearColor& NewColor);
+	void SetEvolvedColor(const FColor& NewColor);
 	void SetEvolvedSize(const FVector& NewSize);
 
-	FLinearColor& GetEvolvedColor();
+	FColor& GetEvolvedColor();
 	FVector& GetEvolvedSize();
 
 	void ApplyTraits();
