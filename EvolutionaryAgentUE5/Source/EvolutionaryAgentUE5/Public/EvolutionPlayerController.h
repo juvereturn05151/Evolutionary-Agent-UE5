@@ -3,8 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "GameFramework/PlayerController.h"
 #include "EvolutionPlayerController.generated.h"
+
+class UInputMappingContext;
+class UInputAction;
 
 /**
  * 
@@ -18,5 +22,12 @@ protected:
     virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
 
-    void OnClick();
+    // Enhanced Input components
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    TObjectPtr<UInputMappingContext> DefaultMappingContext;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    TObjectPtr<UInputAction> LeftClickAction;
+
+    void HandleClick(const FInputActionValue& Value);
 };

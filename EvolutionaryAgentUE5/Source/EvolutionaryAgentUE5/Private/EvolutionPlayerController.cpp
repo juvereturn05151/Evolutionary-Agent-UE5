@@ -1,12 +1,19 @@
 #include "EvolutionPlayerController.h"
 #include "TopDownCameraActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "EvolutionAgent.h"
 #include "Engine/World.h"
 
 void AEvolutionPlayerController::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+    {
+        Subsystem->AddMappingContext(DefaultMappingContext, 0);
+    }
 
     // Enable mouse controls
     bShowMouseCursor = true;
@@ -25,26 +32,39 @@ void AEvolutionPlayerController::BeginPlay()
 
 void AEvolutionPlayerController::SetupInputComponent()
 {
+    UE_LOG(LogTemp, Warning, TEXT("SetupInputComponent"));
     Super::SetupInputComponent();
 
-    InputComponent->BindAction("LeftClick", IE_Pressed, this, &AEvolutionPlayerController::OnClick);
+    if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+    {
+        EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this, &AEvolutionPlayerController::HandleClick);
+    }
 }
 
-void AEvolutionPlayerController::OnClick()
+void AEvolutionPlayerController::HandleClick(const FInputActionValue& Value)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Fuck"));
+    // 1. Use custom object channel
+    FCollisionObjectQueryParams ObjectParams;
+    ObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic); // Or your custom channel
 
+    // 2. More precise trace
     FHitResult Hit;
-    GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+    GetHitResultUnderCursorByChannel(
+        ETraceTypeQuery::TraceTypeQuery1, // Use your custom trace channel
+        true, // Trace complex
+        Hit
+    );
 
+    // 3. Debug output
     if (Hit.bBlockingHit)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *Hit.GetActor()->GetName());
+        UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *Hit.GetActor()->GetName());
+        DrawDebugSphere(GetWorld(), Hit.Location, 20.f, 12, FColor::Red, false, 2.f);
 
-        if (AEvolutionAgent* Agent = Cast<AEvolutionAgent>(Hit.GetActor()))
+        if (Hit.GetActor()->IsA<AEvolutionAgent>())
         {
-            Agent->Destroy();
-            UE_LOG(LogTemp, Log, TEXT("Agent killed!"));
+            Hit.GetActor()->Destroy();
+            UE_LOG(LogTemp, Warning, TEXT("Agent destroyed!"));
         }
     }
 }

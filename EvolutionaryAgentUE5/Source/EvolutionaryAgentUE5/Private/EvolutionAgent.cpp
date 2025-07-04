@@ -14,8 +14,8 @@ AEvolutionAgent::AEvolutionAgent()
 
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
 	RootComponent = CollisionComponent;
-	CollisionComponent->InitCapsuleSize(35.f, 35.f); // Radius, HalfHeight
-	CollisionComponent->SetCollisionProfileName(TEXT("Pawn")); // Or "Custom" profile
+	CollisionComponent->InitCapsuleSize(50.f, 50.f); // Radius, HalfHeight
+	CollisionComponent->SetCollisionProfileName(TEXT("EvolutionAgent")); // Or "Custom" profile
 
 
 	// 2. Configure mesh (now attached to collision root)
