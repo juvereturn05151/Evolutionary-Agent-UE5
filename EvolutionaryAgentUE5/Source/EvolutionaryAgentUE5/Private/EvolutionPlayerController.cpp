@@ -32,7 +32,6 @@ void AEvolutionPlayerController::BeginPlay()
 
 void AEvolutionPlayerController::SetupInputComponent()
 {
-    UE_LOG(LogTemp, Warning, TEXT("SetupInputComponent"));
     Super::SetupInputComponent();
 
     if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
