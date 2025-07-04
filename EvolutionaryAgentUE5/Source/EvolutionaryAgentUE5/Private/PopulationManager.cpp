@@ -80,7 +80,17 @@ void APopulationManager::SpawnInitialPopulation()
 
             // Optional: Apply traits immediately
             NewAgent->ApplyTraits();
+
+            Population.Add(NewAgent);
         }
+    }
+}
+
+void APopulationManager::AddToPopulation(AEvolutionAgent* NewAgent)
+{
+    if (NewAgent)
+    {
+        Population.Add(NewAgent);  // Add to the array
     }
 }
 

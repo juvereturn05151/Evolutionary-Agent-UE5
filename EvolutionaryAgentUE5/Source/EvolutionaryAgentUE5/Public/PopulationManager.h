@@ -26,10 +26,18 @@ protected:
 	// Number of agents to spawn
 	UPROPERTY(EditAnywhere, Category = "Evolution")
 	int32 InitialPopulation = 50;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Population Manager", meta = (AllowPrivateAccess = "true"))
+	int32 TrialTime = 10;  // Time in seconds for each trial
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Population Manager", meta = (AllowPrivateAccess = "true"))
+	int32 Generation = 1;
+	float ElapsedTime = 0.0f;
 
 	// Spawn area dimensions
 	UPROPERTY(EditAnywhere, Category = "Evolution")
 	FVector SpawnArea = FVector(1000, 1000, 0);
+
+	UPROPERTY()  // Makes it visible to UE's reflection system
+	TArray<AEvolutionAgent*> Population;  // List of agent pointers
 
 public:	
 	// Called every frame
@@ -37,5 +45,14 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnInitialPopulation();
+
+	void AddToPopulation(AEvolutionAgent* NewAgent);
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetGeneration() const { return Generation; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetElapsedTime() const { return ElapsedTime; }
+
 
 };
