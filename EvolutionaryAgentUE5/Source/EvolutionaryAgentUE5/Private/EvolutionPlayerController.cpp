@@ -65,7 +65,7 @@ void AEvolutionPlayerController::HandleClick(const FInputActionValue& Value)
             if (AEvolutionAgent* Agent = static_cast<AEvolutionAgent*>(Hit.GetActor()))
             {
                 Agent->SetTimeToDie(APopulationManager::GetInstance(GetWorld())->GetElapsedTime());
-                Agent->Destroy();
+				Agent->DisableComponents();
             }
         }
     }

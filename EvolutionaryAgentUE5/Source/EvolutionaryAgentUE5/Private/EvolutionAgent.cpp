@@ -37,6 +37,7 @@ AEvolutionAgent::AEvolutionAgent()
 	}
 
 	// Default traits
+	TimeToDie = 10.0f; // Default time to die
 	//SetEvolvedColor(FColor(255, 100, 50));
 	EvolvedSize = FVector(1.0f);
 }
@@ -80,6 +81,11 @@ FVector& AEvolutionAgent::GetEvolvedSize()
 	return EvolvedSize;
 }
 
+float AEvolutionAgent::GetTimeToDie() const
+{
+	return TimeToDie;
+}
+
 void AEvolutionAgent::ApplyTraits()
 {
 	// Set size
@@ -92,6 +98,19 @@ void AEvolutionAgent::ApplyTraits()
 		UMaterialInstanceDynamic* DynMat = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 		DynMat->SetVectorParameterValue("Color", FLinearColor(EvolvedColor));
 		Mesh->SetMaterial(0, DynMat);
+	}
+}
+
+void AEvolutionAgent::DisableComponents()
+{
+	if (Mesh)
+	{
+		Mesh->SetHiddenInGame(true);  // Better performance than SetVisibility
+	}
+
+	if (CollisionComponent)
+	{
+		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 

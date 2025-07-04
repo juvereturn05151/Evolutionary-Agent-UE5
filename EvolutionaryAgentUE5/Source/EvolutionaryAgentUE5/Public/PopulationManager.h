@@ -63,5 +63,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetElapsedTime() const { return ElapsedTime; }
 
+	AEvolutionAgent* Breed(AEvolutionAgent* Parent1, AEvolutionAgent* Parent2);
 
+	void BreedNewPopulation();
 };

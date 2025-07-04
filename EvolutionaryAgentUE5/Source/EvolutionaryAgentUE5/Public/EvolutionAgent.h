@@ -27,6 +27,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	float TimeToDie;
 
+	bool dead = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -47,7 +49,9 @@ public:
 
 	FColor& GetEvolvedColor();
 	FVector& GetEvolvedSize();
+	float GetTimeToDie() const;
 
 	void ApplyTraits();
+	void DisableComponents();
 
 };
