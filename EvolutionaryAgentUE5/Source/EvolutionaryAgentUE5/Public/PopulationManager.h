@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "PopulationManager.generated.h"
 
+class AEvolutionAgent;
+
 UCLASS()
 class EVOLUTIONARYAGENTUE5_API APopulationManager : public AActor
 {
@@ -24,38 +26,42 @@ private:
 	// Static instance pointer
 	static APopulationManager* Instance;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	// Agent class to spawn
-	UPROPERTY(EditAnywhere, Category = "Evolution")
-	TSubclassOf<class AEvolutionAgent> AgentClass;
-
-	// Number of agents to spawn
-	UPROPERTY(EditAnywhere, Category = "Evolution")
-	int32 InitialPopulation = 50;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Population Manager", meta = (AllowPrivateAccess = "true"))
-	int32 TrialTime = 10;  // Time in seconds for each trial
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Population Manager", meta = (AllowPrivateAccess = "true"))
 	int32 Generation = 1;
+	float TrialTime = 10;
 	float ElapsedTime = 0.0f;
 
-	// Spawn area dimensions
+	//list of agent pointers
+	TArray<AEvolutionAgent*> Population;
+
+protected:
+	//agent class to spawn
+	UPROPERTY(EditAnywhere, Category = "Evolution")
+	TSubclassOf<AEvolutionAgent> AgentClass;
+
+	//number of agents to spawn
+	UPROPERTY(EditAnywhere, Category = "Evolution")
+	int32 InitialPopulation = 50;
+
+	//spawn area dimensions
 	UPROPERTY(EditAnywhere, Category = "Evolution")
 	FVector SpawnArea = FVector(1000, 1000, 0);
 
-	UPROPERTY()  // Makes it visible to UE's reflection system
-	TArray<AEvolutionAgent*> Population;  // List of agent pointers
+private:
+	void AddToPopulation(AEvolutionAgent* NewAgent);
+
+	void BreedNewPopulation();
+
+	AEvolutionAgent* Breed(AEvolutionAgent* Parent1, AEvolutionAgent* Parent2);
+
+protected:
+	//called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
 	void SpawnInitialPopulation();
-
-	void AddToPopulation(AEvolutionAgent* NewAgent);
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetGeneration() const { return Generation; }
@@ -63,7 +69,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetElapsedTime() const { return ElapsedTime; }
 
-	AEvolutionAgent* Breed(AEvolutionAgent* Parent1, AEvolutionAgent* Parent2);
 
-	void BreedNewPopulation();
 };

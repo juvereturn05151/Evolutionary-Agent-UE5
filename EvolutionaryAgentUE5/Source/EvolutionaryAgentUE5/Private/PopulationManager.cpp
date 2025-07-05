@@ -15,10 +15,10 @@ APopulationManager* APopulationManager::GetInstance(const UObject* WorldContextO
         UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
         if (World)
         {
-            // Find existing instance in the world
+            //find existing instance in the world
             Instance = Cast<APopulationManager>(UGameplayStatics::GetActorOfClass(World, APopulationManager::StaticClass()));
 
-            // If none exists, spawn one
+            //if none exists, spawn one
             if (!Instance)
             {
                 FActorSpawnParameters SpawnParams;
@@ -32,12 +32,12 @@ APopulationManager* APopulationManager::GetInstance(const UObject* WorldContextO
 
 APopulationManager::APopulationManager()
 {
-    // Ensure this actor ticks
+    //ensure this actor ticks
     PrimaryActorTick.bCanEverTick = true;
 
-    // Make sure this actor persists between levels
-    bReplicates = true;
-    bAlwaysRelevant = true;
+	//make sure this actor persists between levels, however, we will not use this feature in this example
+   /* bReplicates = true;
+    bAlwaysRelevant = true;*/
 }
 
 // Called when the game starts or when spawned
@@ -71,7 +71,7 @@ void APopulationManager::SpawnInitialPopulation()
 
     for (int32 i = 0; i < InitialPopulation; i++)
     {
-        // Calculate random position
+        //calculate random position
         FVector Location = GetActorLocation() +
             FVector(
                 FMath::FRandRange(-SpawnArea.X / 2, SpawnArea.X / 2),
@@ -79,14 +79,14 @@ void APopulationManager::SpawnInitialPopulation()
                 0
             );
 
-        // Random rotation
+        //fixed rotation
         FRotator Rotation(0, 0, 0);
 
-        // Spawn parameters
+        //spawn parameters
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-        // Spawn the agent
+        //spawn the agent
         AEvolutionAgent* NewAgent = GetWorld()->SpawnActor<AEvolutionAgent>(
             AgentClass,
             Location,
@@ -96,17 +96,17 @@ void APopulationManager::SpawnInitialPopulation()
 
         if (NewAgent)
         {
-            // Generate random color (RGB 0-255)
+            //generate random color (RGB 0-255)
             FColor RandomColor(
                 FMath::RandRange(0, 255),   // Red
                 FMath::RandRange(0, 255),   // Green
                 FMath::RandRange(0, 255)     // Blue
             );
 
-            // Set the random color
+            //set the random color
             NewAgent->SetEvolvedColor(RandomColor);
 
-            // Optional: Apply traits immediately
+            //apply traits immediately
             NewAgent->ApplyTraits();
 
             Population.Add(NewAgent);
