@@ -64,7 +64,7 @@ void APopulationManager::SpawnInitialPopulation()
 
     for (int32 i = 0; i < initialPopulation; i++)
     {
-        Breed(NULL, NULL);
+        AddToPopulation(Breed(NULL, NULL));
     }
 }
 
@@ -105,12 +105,15 @@ AEvolutionAgent* APopulationManager::Breed(AEvolutionAgent* Parent1, AEvolutionA
         if (FMath::RandRange(0, 1000) > 5 && (Parent1 && Parent2))
         {
             FColor Color(
-                FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedColor().R : Parent2->GetEvolvedColor().R,   // Red
-                FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedColor().G : Parent2->GetEvolvedColor().G,   // Green
-                FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedColor().B : Parent2->GetEvolvedColor().B     // Blue
+                FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedColor().R : Parent2->GetEvolvedColor().R,  
+                FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedColor().G : Parent2->GetEvolvedColor().G,  
+                FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedColor().B : Parent2->GetEvolvedColor().B     
             );
 
+            FVector Size = FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedSize() : Parent2->GetEvolvedSize();
+
             OffSpring->SetEvolvedColor(Color);
+            OffSpring->SetEvolvedSize(Size);
         }
         else
         {
@@ -120,7 +123,16 @@ AEvolutionAgent* APopulationManager::Breed(AEvolutionAgent* Parent1, AEvolutionA
                 FMath::RandRange(0, 255)     // Blue
             );
 
+            //random size between 1.0 and 2.0
+            float size = FMath::RandRange(1.0f, 1.15f);
+            FVector RandomSize(
+                size,
+                size,
+                1.0f        
+			);
+
             OffSpring->SetEvolvedColor(RandomColor);
+            OffSpring->SetEvolvedSize(RandomSize);
         }
 
         OffSpring->ApplyTraits();
@@ -152,10 +164,12 @@ void APopulationManager::BreedNewPopulation()
             if (AEvolutionAgent* Child1 = Breed(SortedList[i], SortedList[j]))
             {
                 NewPopulation.Add(Child1);
+                printf("Breed Child 1");
             }
             if (AEvolutionAgent* Child2 = Breed(SortedList[j], SortedList[i]))
             {
                 NewPopulation.Add(Child2);
+                printf("Breed Child 2");
             }
         }
     }

@@ -36,7 +36,6 @@ AEvolutionAgent::AEvolutionAgent()
 
 	//default traits
 	timeToDie = 10.0f;
-	EvolvedSize = FVector(1.0f);
 }
 
 void AEvolutionAgent::BeginPlay()
