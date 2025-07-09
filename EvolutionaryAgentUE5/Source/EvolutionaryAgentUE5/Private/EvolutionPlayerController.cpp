@@ -13,15 +13,15 @@ void AEvolutionPlayerController::BeginPlay()
 
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
     {
-        Subsystem->AddMappingContext(DefaultMappingContext, 0);
+        Subsystem->AddMappingContext(defaultMappingContext, 0);
     }
 
-    // Enable mouse controls
+    //enable mouse controls
     bShowMouseCursor = true;
     bEnableClickEvents = true;
     bEnableMouseOverEvents = true;
 
-    // Find camera actor in level
+    //find camera actor in level
     TArray<AActor*> Cameras;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATopDownCameraActor::StaticClass(), Cameras);
 
@@ -37,17 +37,17 @@ void AEvolutionPlayerController::SetupInputComponent()
 
     if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
     {
-        EnhancedInputComponent->BindAction(LeftClickAction, ETriggerEvent::Triggered, this, &AEvolutionPlayerController::HandleClick);
+        EnhancedInputComponent->BindAction(leftClickAction, ETriggerEvent::Triggered, this, &AEvolutionPlayerController::HandleClick);
     }
 }
 
 void AEvolutionPlayerController::HandleClick(const FInputActionValue& Value)
 {
-    // 1. Use custom object channel
+    //1. use custom object channel
     FCollisionObjectQueryParams ObjectParams;
     ObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic); // Or your custom channel
 
-    // 2. More precise trace
+    //2. more precise trace
     FHitResult Hit;
     GetHitResultUnderCursorByChannel(
         ETraceTypeQuery::TraceTypeQuery1, // Use your custom trace channel
@@ -55,7 +55,7 @@ void AEvolutionPlayerController::HandleClick(const FInputActionValue& Value)
         Hit
     );
 
-    // 3. Debug output
+    //3. debug output
     if (Hit.bBlockingHit)
     {
         DrawDebugSphere(GetWorld(), Hit.Location, 20.f, 12, FColor::Red, false, 2.f);

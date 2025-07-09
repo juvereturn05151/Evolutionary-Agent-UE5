@@ -12,10 +12,9 @@ class EVOLUTIONARYAGENTUE5_API ATopDownCameraActor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ATopDownCameraActor();
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	class UCameraComponent* CameraComponent;
+	class UCameraComponent* cameraComponent;
 };

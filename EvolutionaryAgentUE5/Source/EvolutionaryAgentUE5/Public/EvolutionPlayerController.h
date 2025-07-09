@@ -19,15 +19,16 @@ class EVOLUTIONARYAGENTUE5_API AEvolutionPlayerController : public APlayerContro
 	GENERATED_BODY()
 
 protected:
-    virtual void BeginPlay() override;
-    virtual void SetupInputComponent() override;
-
     // Enhanced Input components
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    TObjectPtr<UInputMappingContext> DefaultMappingContext;
+    TObjectPtr<UInputMappingContext> defaultMappingContext;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    TObjectPtr<UInputAction> LeftClickAction;
+    TObjectPtr<UInputAction> leftClickAction;
+
+protected:
+    virtual void BeginPlay() override;
+    virtual void SetupInputComponent() override;
 
     void HandleClick(const FInputActionValue& Value);
 };

@@ -4,5 +4,6 @@
 AEvolutionGameMode::AEvolutionGameMode()
 {
     PlayerControllerClass = AEvolutionPlayerController::StaticClass();
-    DefaultPawnClass = nullptr; // No pawn needed for pure click interaction
+    // No pawn needed for pure click interaction
+    DefaultPawnClass = nullptr; 
 }

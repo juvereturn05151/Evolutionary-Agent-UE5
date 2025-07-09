@@ -64,46 +64,7 @@ void APopulationManager::SpawnInitialPopulation()
 
     for (int32 i = 0; i < initialPopulation; i++)
     {
-        //calculate random position
-        FVector Location = GetActorLocation() +
-            FVector(
-                FMath::FRandRange(-spawnArea.X / 2, spawnArea.X / 2),
-                FMath::FRandRange(-spawnArea.Y / 2, spawnArea.Y / 2),
-                0
-            );
-
-        //fixed rotation
-        FRotator Rotation(0, 0, 0);
-
-        //spawn parameters
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-        //spawn the agent
-        AEvolutionAgent* NewAgent = GetWorld()->SpawnActor<AEvolutionAgent>(
-            agentClass,
-            Location,
-            Rotation,
-            SpawnParams
-        );
-
-        if (NewAgent)
-        {
-            //generate random color (RGB 0-255)
-            FColor RandomColor(
-                FMath::RandRange(0, 255),   // Red
-                FMath::RandRange(0, 255),   // Green
-                FMath::RandRange(0, 255)     // Blue
-            );
-
-            //set the random color
-            NewAgent->SetEvolvedColor(RandomColor);
-
-            //apply traits immediately
-            NewAgent->ApplyTraits();
-
-            population_agents.Add(NewAgent);
-        }
+        Breed(NULL, NULL);
     }
 }
 
@@ -124,14 +85,14 @@ AEvolutionAgent* APopulationManager::Breed(AEvolutionAgent* Parent1, AEvolutionA
             0
         );
 
-    // Origin rotation
+    //origin rotation
     FRotator Rotation(0, 0, 0);
 
-    // Spawn parameters
+    //spawn parameters
     FActorSpawnParameters SpawnParams;
     SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-    // Spawn the agent
+    //spawn the agent
     AEvolutionAgent* OffSpring = GetWorld()->SpawnActor<AEvolutionAgent>(
         agentClass,
         Location,
@@ -141,7 +102,7 @@ AEvolutionAgent* APopulationManager::Breed(AEvolutionAgent* Parent1, AEvolutionA
 
     if (OffSpring) 
     {
-        if (FMath::RandRange(0, 1000) > 5)
+        if (FMath::RandRange(0, 1000) > 5 && (Parent1 && Parent2))
         {
             FColor Color(
                 FMath::RandRange(0, 10) < 5 ? Parent1->GetEvolvedColor().R : Parent2->GetEvolvedColor().R,   // Red
@@ -172,22 +133,22 @@ void APopulationManager::BreedNewPopulation()
 {
     TArray<AEvolutionAgent*> NewPopulation;
 
-    // 1. Create sorted copy of the population (descending by TimeToDie)
+    //1. create sorted copy of the population (descending by TimeToDie)
     TArray<AEvolutionAgent*> SortedList = population_agents;
     SortedList.Sort([](const AEvolutionAgent& A, const AEvolutionAgent& B) {
         return A.GetTimeToDie() < B.GetTimeToDie(); // Descending sort
         });
 
-    // 2. Clear old population
+    //2. clear old population
     population_agents.Empty();
 
-    // 3. Breed upper half of the sorted list
+    //3. breed upper half of the sorted list
     const int32 HalfPopulation = SortedList.Num() / 2;
     for (int32 i = HalfPopulation; i < SortedList.Num() - 1; i++)
     {
         for (int32 j = HalfPopulation + 1; j < SortedList.Num(); j++)
         {
-            // Breed in both orders (A+B and B+A)
+            //breed in both orders (A+B and B+A)
             if (AEvolutionAgent* Child1 = Breed(SortedList[i], SortedList[j]))
             {
                 NewPopulation.Add(Child1);
@@ -199,7 +160,7 @@ void APopulationManager::BreedNewPopulation()
         }
     }
 
-    // 4. Destroy all parents and previous population
+    //4. destroy all parents and previous population
     for (AEvolutionAgent* Agent : SortedList)
     {
         if (IsValid(Agent))
@@ -208,9 +169,8 @@ void APopulationManager::BreedNewPopulation()
         }
     }
 
-    // 5. Update the population and generation counter
+    //5. update the population and generation counter
     population_agents = NewPopulation;
     generation++;
     UE_LOG(LogTemp, Log, TEXT("New generation %d created with %d agents"), generation, population_agents.Num());
 }
-
