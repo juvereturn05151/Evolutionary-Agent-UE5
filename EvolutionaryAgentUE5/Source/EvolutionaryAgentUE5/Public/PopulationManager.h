@@ -26,25 +26,25 @@ private:
 	// Static instance pointer
 	static APopulationManager* Instance;
 
-	int32 Generation = 1;
-	float TrialTime = 10;
-	float ElapsedTime = 0.0f;
+	int32 generation = 1;
+	float trialTime = 10;
+	float elapsedTime = 0.0f;
 
 	//list of agent pointers
-	TArray<AEvolutionAgent*> Population;
+	TArray<AEvolutionAgent*> population_agents;
 
 protected:
 	//agent class to spawn
 	UPROPERTY(EditAnywhere, Category = "Evolution")
-	TSubclassOf<AEvolutionAgent> AgentClass;
+	TSubclassOf<AEvolutionAgent> agentClass;
 
 	//number of agents to spawn
 	UPROPERTY(EditAnywhere, Category = "Evolution")
-	int32 InitialPopulation = 50;
+	int32 initialPopulation = 50;
 
 	//spawn area dimensions
 	UPROPERTY(EditAnywhere, Category = "Evolution")
-	FVector SpawnArea = FVector(1000, 1000, 0);
+	FVector spawnArea = FVector(1000, 1000, 0);
 
 private:
 	void AddToPopulation(AEvolutionAgent* NewAgent);
@@ -54,20 +54,18 @@ private:
 	AEvolutionAgent* Breed(AEvolutionAgent* Parent1, AEvolutionAgent* Parent2);
 
 protected:
-	//called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SpawnInitialPopulation();
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetGeneration() const { return Generation; }
+	int32 GetGeneration() const { return generation; }
 
 	UFUNCTION(BlueprintCallable)
-	float GetElapsedTime() const { return ElapsedTime; }
+	float GetElapsedTime() const { return elapsedTime; }
 
 
 };

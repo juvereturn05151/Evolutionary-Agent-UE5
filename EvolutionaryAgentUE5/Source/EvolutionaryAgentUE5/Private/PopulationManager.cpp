@@ -34,48 +34,41 @@ APopulationManager::APopulationManager()
 {
     //ensure this actor ticks
     PrimaryActorTick.bCanEverTick = true;
-
-	//make sure this actor persists between levels, however, we will not use this feature in this example
-   /* bReplicates = true;
-    bAlwaysRelevant = true;*/
 }
 
-// Called when the game starts or when spawned
 void APopulationManager::BeginPlay()
 {
 	Super::BeginPlay();
     SpawnInitialPopulation();
 }
 
-// Called every frame
 void APopulationManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	ElapsedTime += DeltaTime;
-    if (ElapsedTime >= TrialTime) 
+	elapsedTime += DeltaTime;
+    if (elapsedTime >= trialTime) 
     {
-		//Breed New Population
         BreedNewPopulation();
-		ElapsedTime = 0.0f; // Reset elapsed time
+		elapsedTime = 0.0f; 
     }
 }
 
 void APopulationManager::SpawnInitialPopulation()
 {
-    if (!AgentClass) 
+    if (!agentClass) 
     {
         UE_LOG(LogTemp, Error, TEXT("No AgentClass assigned!"));
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Missing Agent Class"));
         return;
     }
 
-    for (int32 i = 0; i < InitialPopulation; i++)
+    for (int32 i = 0; i < initialPopulation; i++)
     {
         //calculate random position
         FVector Location = GetActorLocation() +
             FVector(
-                FMath::FRandRange(-SpawnArea.X / 2, SpawnArea.X / 2),
-                FMath::FRandRange(-SpawnArea.Y / 2, SpawnArea.Y / 2),
+                FMath::FRandRange(-spawnArea.X / 2, spawnArea.X / 2),
+                FMath::FRandRange(-spawnArea.Y / 2, spawnArea.Y / 2),
                 0
             );
 
@@ -88,7 +81,7 @@ void APopulationManager::SpawnInitialPopulation()
 
         //spawn the agent
         AEvolutionAgent* NewAgent = GetWorld()->SpawnActor<AEvolutionAgent>(
-            AgentClass,
+            agentClass,
             Location,
             Rotation,
             SpawnParams
@@ -109,7 +102,7 @@ void APopulationManager::SpawnInitialPopulation()
             //apply traits immediately
             NewAgent->ApplyTraits();
 
-            Population.Add(NewAgent);
+            population_agents.Add(NewAgent);
         }
     }
 }
@@ -118,7 +111,7 @@ void APopulationManager::AddToPopulation(AEvolutionAgent* NewAgent)
 {
     if (NewAgent)
     {
-        Population.Add(NewAgent);  // Add to the array
+        population_agents.Add(NewAgent);  // Add to the array
     }
 }
 
@@ -126,12 +119,12 @@ AEvolutionAgent* APopulationManager::Breed(AEvolutionAgent* Parent1, AEvolutionA
 {
     FVector Location = GetActorLocation() +
         FVector(
-            FMath::FRandRange(-SpawnArea.X / 2, SpawnArea.X / 2),
-            FMath::FRandRange(-SpawnArea.Y / 2, SpawnArea.Y / 2),
+            FMath::FRandRange(-spawnArea.X / 2, spawnArea.X / 2),
+            FMath::FRandRange(-spawnArea.Y / 2, spawnArea.Y / 2),
             0
         );
 
-    // Random rotation
+    // Origin rotation
     FRotator Rotation(0, 0, 0);
 
     // Spawn parameters
@@ -140,7 +133,7 @@ AEvolutionAgent* APopulationManager::Breed(AEvolutionAgent* Parent1, AEvolutionA
 
     // Spawn the agent
     AEvolutionAgent* OffSpring = GetWorld()->SpawnActor<AEvolutionAgent>(
-        AgentClass,
+        agentClass,
         Location,
         Rotation,
         SpawnParams
@@ -180,13 +173,13 @@ void APopulationManager::BreedNewPopulation()
     TArray<AEvolutionAgent*> NewPopulation;
 
     // 1. Create sorted copy of the population (descending by TimeToDie)
-    TArray<AEvolutionAgent*> SortedList = Population;
+    TArray<AEvolutionAgent*> SortedList = population_agents;
     SortedList.Sort([](const AEvolutionAgent& A, const AEvolutionAgent& B) {
         return A.GetTimeToDie() < B.GetTimeToDie(); // Descending sort
         });
 
-    // 2. Clear old population (but don't destroy yet - we need parents for breeding)
-    Population.Empty();
+    // 2. Clear old population
+    population_agents.Empty();
 
     // 3. Breed upper half of the sorted list
     const int32 HalfPopulation = SortedList.Num() / 2;
@@ -216,9 +209,8 @@ void APopulationManager::BreedNewPopulation()
     }
 
     // 5. Update the population and generation counter
-    Population = NewPopulation;
-    Generation++;
-
-    UE_LOG(LogTemp, Log, TEXT("New generation %d created with %d agents"), Generation, Population.Num());
+    population_agents = NewPopulation;
+    generation++;
+    UE_LOG(LogTemp, Log, TEXT("New generation %d created with %d agents"), generation, population_agents.Num());
 }
 
