@@ -9,7 +9,6 @@
 // Sets default values
 AEvolutionAgent::AEvolutionAgent()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
@@ -17,13 +16,12 @@ AEvolutionAgent::AEvolutionAgent()
 	CollisionComponent->InitCapsuleSize(50.f, 50.f); // Radius, HalfHeight
 	CollisionComponent->SetCollisionProfileName(TEXT("EvolutionAgent")); // Or "Custom" profile
 
-
-	// 2. Configure mesh (now attached to collision root)
+	//2. configure mesh (now attached to collision root)
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Let root handle collisions
 
-	// Add basic cube mesh
+	//add basic cube mesh
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube"));
 	if (CubeMesh.Succeeded())
 	{
@@ -36,24 +34,19 @@ AEvolutionAgent::AEvolutionAgent()
 		Mesh->SetMaterial(0, BaseMaterial.Object);
 	}
 
-	// Default traits
-	TimeToDie = 10.0f; // Default time to die
-	//SetEvolvedColor(FColor(255, 100, 50));
+	//default traits
+	timeToDie = 10.0f;
 	EvolvedSize = FVector(1.0f);
 }
 
-// Called when the game starts or when spawned
 void AEvolutionAgent::BeginPlay()
 {
 	Super::BeginPlay();
-	//ApplyTraits();
 }
 
-// Called every frame
 void AEvolutionAgent::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AEvolutionAgent::SetEvolvedColor(const FColor& NewColor)
@@ -68,7 +61,7 @@ void AEvolutionAgent::SetEvolvedSize(const FVector& NewSize)
 
 void AEvolutionAgent::SetTimeToDie(float NewTime)
 {
-	TimeToDie = NewTime;
+	timeToDie = NewTime;
 }
 
 FColor& AEvolutionAgent::GetEvolvedColor()
@@ -83,15 +76,15 @@ FVector& AEvolutionAgent::GetEvolvedSize()
 
 float AEvolutionAgent::GetTimeToDie() const
 {
-	return TimeToDie;
+	return timeToDie;
 }
 
 void AEvolutionAgent::ApplyTraits()
 {
-	// Set size
+	//set size
 	SetActorScale3D(EvolvedSize);
 
-	// Set color
+	//set color
 	UMaterialInterface* BaseMaterial = Mesh->GetMaterial(0);
 	if (BaseMaterial)
 	{

@@ -16,21 +16,20 @@ public:
 	AEvolutionAgent();
 
 private:
-	// Collision component (MUST be root)
+	//collision component (MUST be root)
 	UPROPERTY(VisibleAnywhere)
 	class UCapsuleComponent* CollisionComponent;
 
-	// Visible box component
+	//visible box component
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere)
-	float TimeToDie;
+	float timeToDie;
 
 	bool dead = false;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Agent Trait")
@@ -40,7 +39,6 @@ protected:
 	FVector EvolvedSize;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetEvolvedColor(const FColor& NewColor);
